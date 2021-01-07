@@ -39,6 +39,7 @@ for pp in content:
                 hgt = int(val[:val.index('in')])
                 valid = hgt >= 59 and hgt <= 76
         
+        
         if not valid:
             break
         
