@@ -1,21 +1,13 @@
-# content = []
-# num_lines = 0
-# with open('day4input.txt', 'r', newline='\n\n') as f:
-#     for line in f:
-#         if line == "" or line == "\n':
-#             num_lines += 1
-#         else:
-#             cont
-
-# print(content[0])
 import re
+import numpy as np
 content = open('day4input.txt').read().strip('\n').split('\n\n')
 req_fields = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
+ecl = ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']
 num_valid = 0
-for pp in content:
+for i, pp in enumerate(content):
     fields = {f.split(':')[0]: f.split(':')[1] for f in re.split(' |\n', pp)}
-    # if all([v in fields for v in req_fields]):
-    #     valid += 1
+    # if not all([v in fields for v in req_fields]):
+    #     continue
     valid = True
     for field in req_fields:
         if field not in fields:
@@ -24,7 +16,7 @@ for pp in content:
         val = fields[field]
         if field == 'byr':
             val = int(val)
-            valid = val >= 1920 and val <= 2002
+            valid = (val >= 1920 and val <= 2002)
         elif field == 'iyr':
             val = int(val)
             valid = val >= 2010 and val <= 2020
@@ -35,28 +27,22 @@ for pp in content:
             if 'cm' in val:
                 hgt = int(val[:val.index('cm')])
                 valid = hgt >= 150 and hgt <= 193
-            if 'in' in val:
+            elif 'in' in val:
                 hgt = int(val[:val.index('in')])
                 valid = hgt >= 59 and hgt <= 76
-        
-        
+            else:
+                valid = False
+        elif field == 'hcl':
+            valid = bool(re.match(r'^#[0-9a-f]{6}$', val))
+        elif field == 'ecl':
+            valid = val in ecl
+        elif field == 'pid':
+            valid = bool(re.match('^[0-9]{9}$', val))
+            
         if not valid:
             break
-        
+
+    if valid:
         num_valid += 1
 
-        
-    # for field in re.split(' |\n', pp):
-    #     if not valid:
-    #         break
-    #     pair = field.split(':')
-    #     key = pair[0]
-    #     val = pair[1]
-    #     if key == 'byr':
-    #         valid = val >= 1920 and val <= 2002
-    #     if key == 'iyr':
-
-    
-
-
-print(valid)
+print(num_valid)
